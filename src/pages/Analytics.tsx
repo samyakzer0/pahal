@@ -29,9 +29,9 @@ import {
   ArrowDown,
   Target,
 } from 'lucide-react'
-import StatCard from '@/components/ui/StatCard'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
-import { dataAPI } from '@/lib/mockData'
+import StatCard from '../components/ui/StatCard'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/Select'
+import { incidentsApi, hotspotsApi } from '../lib/api'
 import { format, subDays, startOfDay, isWithinInterval } from 'date-fns'
 
 const COLORS = ['#dc2626', '#f97316', '#eab308', '#22c55e', '#3b82f6', '#8b5cf6']
@@ -41,17 +41,17 @@ export default function Analytics() {
 
   const { data: incidents = [] } = useQuery({
     queryKey: ['incidents'],
-    queryFn: () => dataAPI.getIncidents(),
+    queryFn: () => incidentsApi.getAll(),
   })
 
   const { data: hotspots = [] } = useQuery({
     queryKey: ['hotspots'],
-    queryFn: () => dataAPI.getHotspots(),
+    queryFn: () => hotspotsApi.getAll(),
   })
 
   // Filter incidents by time range
   const filteredIncidents = incidents.filter((inc) => {
-    const incDate = new Date(inc.created_date)
+    const incDate = new Date(inc.created_at)
     const startDate = subDays(new Date(), parseInt(timeRange))
     return incDate >= startDate
   })
@@ -101,7 +101,7 @@ export default function Analytics() {
     dayEnd.setHours(23, 59, 59, 999)
 
     const count = filteredIncidents.filter((inc) => {
-      const incDate = new Date(inc.created_date)
+      const incDate = new Date(inc.created_at)
       return isWithinInterval(incDate, { start: dayStart, end: dayEnd })
     }).length
 
@@ -114,7 +114,7 @@ export default function Analytics() {
   // Hourly distribution
   const hourlyData = Array(24).fill(0)
   filteredIncidents.forEach((inc) => {
-    const hour = new Date(inc.created_date).getHours()
+    const hour = new Date(inc.created_at).getHours()
     hourlyData[hour]++
   })
 

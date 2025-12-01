@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Upload, MapPin, Loader2, Camera, X, Sparkles, CheckCircle, Phone, User, Brain, AlertCircle } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Textarea } from '@/components/ui/Textarea'
-import { Label } from '@/components/ui/Label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select'
-import { generateDigiPin } from '@/lib/utils'
-import { analyzeAccidentImage, AccidentAnalysis } from '@/lib/perplexityService'
+import { Button } from '../ui/Button'
+import { Input } from '../ui/Input'
+import { Textarea } from '../ui/Textarea'
+import { Label } from '../ui/Label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select'
+import { generateDigiPin } from '../../lib/utils'
+import { analyzeAccidentImage, AccidentAnalysis } from '../../lib/perplexityService'
+import { incidentsApi, incidentMediaApi } from '../../lib/api'
+import type { IncidentInsert } from '../../lib/database.types'
 
 const accidentTypes = [
   { value: 'vehicle_collision', label: 'Vehicle Collision' },
@@ -149,15 +151,77 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    try {
+      // Generate DigiPin
+      const digipin = generateDigiPin(formData.latitude, formData.longitude)
 
-    setSubmitted(true)
-    setIsSubmitting(false)
+      // Prepare incident data
+      const incidentData: IncidentInsert = {
+        title: formData.title || `${formData.accident_type.replace('_', ' ')} Report`,
+        description: formData.description,
+        accident_type: formData.accident_type as any,
+        severity: formData.severity as any,
+        status: 'reported',
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+        address: formData.address,
+        digipin: digipin,
+        source: 'citizen_app',
+        ai_confidence: aiAnalysis?.confidence || null,
+        ai_analysis: aiAnalysis ? JSON.stringify(aiAnalysis) : null,
+        is_ai_verified: !!aiAnalysis,
+        vehicles_involved: aiAnalysis?.vehiclesInvolved || 1,
+        estimated_casualties: aiAnalysis?.estimatedCasualties || 0,
+      }
 
-    setTimeout(() => {
-      onSuccess?.()
-    }, 2000)
+      console.log('Creating incident...', incidentData)
+      // Create incident in database
+      const createdIncident = await incidentsApi.create(incidentData)
+      console.log('Incident created:', createdIncident.id)
+
+      // Upload photos if any (don't fail if upload fails)
+      let uploadedCount = 0
+      if (photoFiles.length > 0) {
+        console.log('Uploading', photoFiles.length, 'photos...')
+        try {
+          const uploadPromises = photoFiles.map((file, index) => 
+            incidentMediaApi.upload(createdIncident.id, file, index === 0)
+              .then(result => {
+                if (result) {
+                  console.log('Photo uploaded:', result)
+                  uploadedCount++
+                }
+                return result
+              })
+              .catch(err => {
+                console.error('Photo upload failed:', err)
+                return null
+              })
+          )
+          
+          await Promise.all(uploadPromises)
+          console.log(`${uploadedCount}/${photoFiles.length} photos uploaded successfully`)
+          
+          if (uploadedCount === 0 && photoFiles.length > 0) {
+            console.warn('All photo uploads failed - check storage bucket setup')
+          }
+        } catch (err) {
+          console.error('Photo upload error:', err)
+          // Continue anyway - incident is saved
+        }
+      }
+
+      setSubmitted(true)
+      setIsSubmitting(false)
+
+      setTimeout(() => {
+        onSuccess?.()
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to submit report:', error)
+      alert('Failed to submit report. Please try again.')
+      setIsSubmitting(false)
+    }
   }
 
   if (submitted) {

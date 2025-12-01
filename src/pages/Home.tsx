@@ -14,9 +14,9 @@ import {
   Clock,
   CheckCircle,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/Dialog'
-import ReportForm from '@/components/forms/ReportForm'
+import { Button } from '../components/ui/Button'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/Dialog'
+import ReportForm from '../components/forms/ReportForm'
 
 export default function Home() {
   const [showReportDialog, setShowReportDialog] = useState(false)

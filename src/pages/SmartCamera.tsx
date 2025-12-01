@@ -21,9 +21,9 @@ import {
   Shield,
   Activity,
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Label } from '@/components/ui/Label'
-import { smartCameraService, SmartCameraCapture } from '@/lib/smartCameraService'
+import { Button } from '../components/ui/Button'
+import { Label } from '../components/ui/Label'
+import { smartCameraService, SmartCameraCapture } from '../lib/smartCameraService'
 import { format } from 'date-fns'
 
 export default function SmartCamera() {
@@ -117,11 +117,18 @@ export default function SmartCamera() {
   }
 
   // Approve capture
-  const approveCapture = (captureId: string) => {
-    smartCameraService.approveCapture(captureId)
-    setCaptures(smartCameraService.getStoredCaptures())
-    setStats(smartCameraService.getStatistics())
-    setSelectedCapture(null)
+  const approveCapture = async (captureId: string) => {
+    try {
+      setStatus('Submitting to database...')
+      await smartCameraService.approveCapture(captureId)
+      setCaptures(smartCameraService.getStoredCaptures())
+      setStats(smartCameraService.getStatistics())
+      setSelectedCapture(null)
+      setStatus('Successfully submitted to database')
+    } catch (error) {
+      console.error('Failed to approve capture:', error)
+      setStatus(`Error: Failed to submit - ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
   }
 
   // Reject capture

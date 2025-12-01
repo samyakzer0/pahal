@@ -25,28 +25,66 @@ export async function uploadIncidentMedia(
   incidentId: string,
   file: File
 ): Promise<{ url: string; path: string } | null> {
-  const fileExt = file.name.split('.').pop()
-  const fileName = `incidents/${incidentId}/${Date.now()}.${fileExt}`
+  try {
+    const fileExt = file.name.split('.').pop()
+    const fileName = `incidents/${incidentId}/${Date.now()}.${fileExt}`
 
-  const { data, error } = await supabase.storage
-    .from(STORAGE_BUCKETS.INCIDENT_MEDIA)
-    .upload(fileName, file, {
-      cacheControl: '3600',
-      upsert: false,
-    })
+    console.log('Uploading file to storage:', fileName, 'Size:', file.size)
 
-  if (error) {
-    console.error('Error uploading incident media:', error)
+    const { data, error } = await supabase.storage
+      .from(STORAGE_BUCKETS.INCIDENT_MEDIA)
+      .upload(fileName, file, {
+        cacheControl: '3600',
+        upsert: false,
+      })
+
+    if (error) {
+      console.error('Error uploading incident media:', error.message, error)
+      
+      // Provide helpful error messages
+      if (error.message.includes('row-level security policy')) {
+        console.error(`
+❌ STORAGE POLICY ERROR: The storage bucket exists but RLS policies are blocking uploads.
+
+📋 TO FIX:
+1. Go to Supabase Dashboard → SQL Editor
+2. Run this SQL:
+
+CREATE POLICY "Anonymous users can upload incident media"
+ON storage.objects FOR INSERT
+TO anon
+WITH CHECK (
+  bucket_id = 'incident-media'
+  AND (storage.foldername(name))[1] = 'incidents'
+);
+
+CREATE POLICY "Anonymous users can view incident media"
+ON storage.objects FOR SELECT
+TO anon
+USING (bucket_id = 'incident-media');
+
+3. Or check database/storage-anon-policies.sql for complete SQL
+        `)
+      }
+      
+      return null
+    }
+
+    console.log('File uploaded successfully:', data.path)
+
+    const { data: urlData } = supabase.storage
+      .from(STORAGE_BUCKETS.INCIDENT_MEDIA)
+      .getPublicUrl(data.path)
+
+    console.log('Public URL:', urlData.publicUrl)
+
+    return {
+      url: urlData.publicUrl,
+      path: data.path,
+    }
+  } catch (err) {
+    console.error('Exception during file upload:', err)
     return null
-  }
-
-  const { data: urlData } = supabase.storage
-    .from(STORAGE_BUCKETS.INCIDENT_MEDIA)
-    .getPublicUrl(data.path)
-
-  return {
-    url: urlData.publicUrl,
-    path: data.path,
   }
 }
 

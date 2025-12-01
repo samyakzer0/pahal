@@ -18,9 +18,9 @@ import {
   AlertTriangle,
   User,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useAuth } from '@/lib/authContext'
-import { Button } from '@/components/ui/Button'
+import { cn } from '../lib/utils'
+import { useAuth } from '../lib/authContext'
+import { Button } from './ui/Button'
 
 const adminNavItems = [
   { name: 'Home', path: '/admin/home', icon: Home },

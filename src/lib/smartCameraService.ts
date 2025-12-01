@@ -5,6 +5,9 @@
  */
 
 import { analyzeAccidentImage, AccidentAnalysis } from './perplexityService'
+import { incidentsApi, incidentMediaApi } from './api'
+import type { IncidentInsert } from './database.types'
+import { generateDigiPin } from './utils'
 
 // Smart Camera configuration
 export interface SmartCameraConfig {
@@ -233,7 +236,8 @@ class SmartCameraService {
       if (analysis.confidence >= this.config.autoSubmitThreshold) {
         capture.status = 'auto-submitted'
         this.onStatusChangeCallback?.(`🚨 Incident detected! Auto-submitting (${Math.round(analysis.confidence * 100)}% confidence)`)
-        // In real implementation, this would submit to backend
+        // Submit to database automatically
+        await this.submitCaptureToDatabase(capture)
         this.storeCapture(capture)
       } else if (analysis.confidence >= this.config.manualReviewThreshold) {
         capture.status = 'pending-review'
@@ -324,12 +328,66 @@ class SmartCameraService {
   }
 
   // Approve a pending capture
-  approveCapture(captureId: string): void {
+  async approveCapture(captureId: string): Promise<void> {
     const captures = this.getStoredCaptures()
     const capture = captures.find(c => c.id === captureId)
     if (capture) {
       capture.status = 'manually-submitted'
+      // Submit to database
+      await this.submitCaptureToDatabase(capture)
       localStorage.setItem('smart_camera_captures', JSON.stringify(captures))
+    }
+  }
+
+  // Submit capture to database
+  private async submitCaptureToDatabase(capture: SmartCameraCapture): Promise<void> {
+    try {
+      if (!capture.analysis || !capture.location) {
+        console.error('Cannot submit capture: missing analysis or location')
+        return
+      }
+
+      const digipin = generateDigiPin(capture.location.lat, capture.location.lng)
+
+      // Prepare incident data
+      const incidentData: IncidentInsert = {
+        title: capture.analysis.title || `${capture.analysis.accidentType.replace('_', ' ')} - Smart Camera`,
+        description: capture.analysis.description,
+        accident_type: capture.analysis.accidentType as any,
+        severity: capture.analysis.severity as any,
+        status: 'reported',
+        latitude: capture.location.lat,
+        longitude: capture.location.lng,
+        address: capture.location.address,
+        digipin: digipin,
+        source: 'smart_camera',
+        ai_confidence: capture.analysis.confidence,
+        ai_analysis: JSON.stringify(capture.analysis),
+        is_ai_verified: true,
+        vehicles_involved: capture.analysis.vehiclesInvolved || 1,
+        estimated_casualties: capture.analysis.estimatedCasualties || 0,
+      }
+
+      console.log('Submitting smart camera capture to database...', incidentData)
+
+      // Create incident
+      const createdIncident = await incidentsApi.create(incidentData)
+      console.log('Smart camera incident created:', createdIncident.id)
+
+      // Upload image
+      if (capture.imageData) {
+        // Convert base64 to blob
+        const response = await fetch(capture.imageData)
+        const blob = await response.blob()
+        const file = new File([blob], `camera_capture_${capture.id}.jpg`, { type: 'image/jpeg' })
+
+        await incidentMediaApi.upload(createdIncident.id, file, true)
+        console.log('Smart camera image uploaded')
+      }
+
+    } catch (error) {
+      console.error('Failed to submit smart camera capture to database:', error)
+      throw error
     }
   }
 

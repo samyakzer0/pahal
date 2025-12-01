@@ -5,8 +5,8 @@ import {
   FileText, Clock, CheckCircle, Edit2, Camera,
   ChevronRight, LogOut, Settings, HelpCircle
 } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import StatusBadge from '@/components/ui/StatusBadge'
+import { Button } from '../components/ui/Button'
+import StatusBadge from '../components/ui/StatusBadge'
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState('reports')

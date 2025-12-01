@@ -20,6 +20,7 @@ export interface Incident {
   response_notes?: string
   report_count: number
   digipin?: string
+  is_ai_detected?: boolean
 }
 
 export interface Hotspot {

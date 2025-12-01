@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import ReportForm from '@/components/forms/ReportForm'
+import ReportForm from '../components/forms/ReportForm'
 
 export default function Report() {
   return (
