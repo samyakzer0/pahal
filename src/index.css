@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-200;
+  }
+  
+  body {
+    @apply bg-slate-50 text-gray-900 antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium px-4 py-2 rounded-xl 
+           transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98];
+  }
+  
+  .btn-danger {
+    @apply bg-danger-600 hover:bg-danger-700 text-white font-medium px-4 py-2 rounded-xl 
+           transition-all duration-200 shadow-sm hover:shadow-md active:scale-[0.98];
+  }
+  
+  .btn-outline {
+    @apply bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium px-4 py-2 rounded-xl 
+           transition-all duration-200 hover:border-gray-300 active:scale-[0.98];
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl border border-gray-100 shadow-card 
+           hover:shadow-card-hover transition-all duration-300;
+  }
+  
+  .input-base {
+    @apply w-full px-4 py-2.5 rounded-xl border border-gray-200 
+           focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 
+           outline-none transition-all duration-200 bg-white;
+  }
+  
+  .label-base {
+    @apply text-sm font-medium text-gray-700 mb-1.5 block;
+  }
+  
+  .nav-link {
+    @apply flex items-center gap-2 px-4 py-2 rounded-xl text-gray-600 
+           hover:text-gray-900 hover:bg-gray-100/80 transition-all duration-200 font-medium;
+  }
+  
+  .nav-link.active {
+    @apply bg-primary-50 text-primary-600;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Leaflet Map Styles Override */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif;
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+
+.leaflet-popup-tip {
+  box-shadow: none;
+}
+
+/* Custom marker pulse animation */
+@keyframes marker-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+.custom-marker-pulse {
+  animation: marker-pulse 1.5s infinite;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  @apply bg-gradient-to-r from-primary-600 to-indigo-600 bg-clip-text text-transparent;
+}
+
+/* Glassmorphism effect */
+.glass {
+  @apply bg-white/80 backdrop-blur-lg border border-white/20;
+}
+
+/* Loading skeleton animation */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  @apply bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 bg-[length:200%_100%];
+  animation: shimmer 1.5s infinite;
+}

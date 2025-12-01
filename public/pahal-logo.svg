@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 80" fill="none">
+  <!-- Main text "pahal" in dark navy blue -->
+  <text x="20" y="55" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="600" fill="#1e2a5e" font-style="italic">
+    pahal
+  </text>
+  
+  <!-- Heartbeat/ECG line in red above the 'h' -->
+  <path d="M102 22 L108 22 L112 10 L118 34 L124 16 L128 22 L134 22" 
+        stroke="#dc2626" 
+        stroke-width="2.5" 
+        fill="none"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  
+  <!-- Small dot on ECG peak -->
+  <circle cx="118" cy="22" r="2.5" fill="#dc2626"/>
+  
+  <!-- Underline extending from 'h' to beyond 'l' -->
+  <line x1="128" y1="58" x2="195" y2="58" stroke="#1e2a5e" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
