@@ -7,7 +7,7 @@
 import { analyzeAccidentImage, AccidentAnalysis } from './perplexityService'
 import { incidentsApi, incidentMediaApi } from './api'
 import type { IncidentInsert } from './database.types'
-import { generateDigiPin } from './utils'
+
 
 // Smart Camera configuration
 export interface SmartCameraConfig {
@@ -91,9 +91,9 @@ class SmartCameraService {
   // Request camera access
   async requestCameraAccess(): Promise<MediaStream> {
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    
+
     const constraints: MediaStreamConstraints = {
-      video: isMobile 
+      video: isMobile
         ? { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
         : { width: { ideal: 1280 }, height: { ideal: 720 } },
       audio: false,
@@ -121,7 +121,7 @@ class SmartCameraService {
 
     this.config.enabled = true
     this.saveConfig()
-    
+
     // Clear existing interval
     if (this.captureInterval) {
       clearInterval(this.captureInterval)
@@ -154,7 +154,7 @@ class SmartCameraService {
   // Release camera
   releaseCamera(): void {
     this.stopCapture()
-    
+
     if (this.videoStream) {
       this.videoStream.getTracks().forEach(track => track.stop())
       this.videoStream = null
@@ -176,7 +176,7 @@ class SmartCameraService {
     // Get video track settings
     const track = this.videoStream.getVideoTracks()[0]
     const settings = track?.getSettings()
-    
+
     if (settings?.width && settings?.height) {
       this.canvas.width = settings.width
       this.canvas.height = settings.height
@@ -276,7 +276,7 @@ class SmartCameraService {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords
-          
+
           // Reverse geocode
           let address = `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`
           try {
@@ -303,7 +303,7 @@ class SmartCameraService {
   private storeCapture(capture: SmartCameraCapture): void {
     const captures = this.getStoredCaptures()
     captures.unshift(capture)
-    
+
     // Keep only last 100 captures
     if (captures.length > 100) {
       captures.splice(100)
@@ -347,7 +347,6 @@ class SmartCameraService {
         return
       }
 
-      const digipin = generateDigiPin(capture.location.lat, capture.location.lng)
 
       // Prepare incident data
       const incidentData: IncidentInsert = {
@@ -359,7 +358,7 @@ class SmartCameraService {
         latitude: capture.location.lat,
         longitude: capture.location.lng,
         address: capture.location.address,
-        digipin: digipin,
+
         source: 'smart_camera',
         ai_confidence: capture.analysis.confidence,
         ai_analysis: JSON.stringify(capture.analysis),

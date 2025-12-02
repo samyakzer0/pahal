@@ -78,10 +78,11 @@ export default function Layout() {
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-gray-100 bg-white"
+              initial={{ opacity: 0, height: 0, y: -10 }}
+              animate={{ opacity: 1, height: 'auto', y: 0 }}
+              exit={{ opacity: 0, height: 0, y: -10 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+              className="md:hidden border-t border-gray-100 bg-white rounded-b-2xl shadow-lg overflow-hidden"
             >
               <div className="px-4 py-3 space-y-1">
                 {navItems.map((item) => {

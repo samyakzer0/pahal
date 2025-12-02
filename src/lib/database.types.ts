@@ -132,7 +132,7 @@ export interface Database {
           longitude: number
           address: string | null
           landmark: string | null
-          digipin: string | null
+
           road_name: string | null
           city: string | null
           state: string | null
@@ -173,7 +173,7 @@ export interface Database {
           longitude: number
           address?: string | null
           landmark?: string | null
-          digipin?: string | null
+
           road_name?: string | null
           city?: string | null
           state?: string | null
@@ -214,7 +214,7 @@ export interface Database {
           longitude?: number
           address?: string | null
           landmark?: string | null
-          digipin?: string | null
+
           road_name?: string | null
           city?: string | null
           state?: string | null

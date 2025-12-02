@@ -15,8 +15,10 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { Button } from '../components/ui/Button'
+import { StoreStyleButton } from '../components/ui/StoreStyleButton'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/Dialog'
 import ReportForm from '../components/forms/ReportForm'
+import StepsCarousel from '../components/StepsCarousel'
 
 export default function Home() {
   const [showReportDialog, setShowReportDialog] = useState(false)
@@ -102,26 +104,23 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button
-                    size="lg"
+                  <StoreStyleButton
                     onClick={() => setShowReportDialog(true)}
-                    className="h-14 px-8 rounded-full bg-red-500 hover:bg-red-600 text-white font-semibold shadow-lg shadow-red-500/30 hover:shadow-red-500/50 transition-all"
-                  >
-                    <AlertTriangle className="w-5 h-5 mr-2" />
-                    Report an Accident
-                  </Button>
+                    icon={<AlertTriangle className="w-full h-full" />}
+                    subLabel="Emergency"
+                    label="Report Accident"
+                    className="bg-red-600 border-red-600 text-white hover:bg-white hover:text-red-600 hover:border-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50"
+                  />
                 </motion.div>
 
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Link to="/hotspots">
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      className="h-14 px-8 rounded-full bg-white/10 border-white/30 text-white hover:bg-white/20 font-semibold backdrop-blur-sm"
-                    >
-                      <MapPin className="w-5 h-5 mr-2" />
-                      View Hotspots
-                    </Button>
+                    <StoreStyleButton
+                      icon={<MapPin className="w-full h-full" />}
+                      subLabel="Explore"
+                      label="View Hotspots"
+                      className="bg-white/10 border-white/30 text-white hover:bg-white hover:text-blue-600 hover:border-white backdrop-blur-sm"
+                    />
                   </Link>
                 </motion.div>
               </div>
@@ -253,35 +252,8 @@ export default function Home() {
           </motion.p>
         </div>
 
-        <div className="grid md:grid-cols-4 gap-6">
-          {steps.map((step, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className="relative"
-            >
-              <div className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg hover:border-gray-200 transition-all duration-300 group h-full">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors">
-                    <step.icon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
-                  </div>
-                  <span className="text-4xl font-bold text-gray-100 group-hover:text-blue-100 transition-colors">
-                    0{index + 1}
-                  </span>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{step.title}</h3>
-                <p className="text-gray-600">{step.description}</p>
-              </div>
-              {index < 3 && (
-                <div className="hidden md:block absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
-                  <ArrowRight className="w-6 h-6 text-gray-300" />
-                </div>
-              )}
-            </motion.div>
-          ))}
+        <div className="flex justify-center">
+          <StepsCarousel steps={steps} />
         </div>
       </section>
 
@@ -304,14 +276,13 @@ export default function Home() {
                 quickly and accurately.
               </p>
               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  size="lg"
+                <StoreStyleButton
                   onClick={() => setShowReportDialog(true)}
-                  className="h-14 px-10 rounded-full bg-white text-blue-600 hover:bg-blue-50 font-bold shadow-xl"
-                >
-                  <AlertTriangle className="w-5 h-5 mr-2" />
-                  Report Now
-                </Button>
+                  icon={<AlertTriangle className="w-full h-full" />}
+                  subLabel="Emergency"
+                  label="Report Now"
+                  className="bg-white text-blue-600 hover:bg-blue-50 hover:text-blue-700 border-white shadow-xl"
+                />
               </motion.div>
             </div>
           </motion.div>

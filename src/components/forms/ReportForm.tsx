@@ -6,7 +6,7 @@ import { Input } from '../ui/Input'
 import { Textarea } from '../ui/Textarea'
 import { Label } from '../ui/Label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/Select'
-import { generateDigiPin } from '../../lib/utils'
+
 import { analyzeAccidentImage, AccidentAnalysis } from '../../lib/perplexityService'
 import { incidentsApi, incidentMediaApi } from '../../lib/api'
 import type { IncidentInsert } from '../../lib/database.types'
@@ -105,7 +105,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
     // Store files and create preview URLs
     const newFiles: File[] = []
     const uploadedUrls: string[] = []
-    
+
     for (const file of Array.from(files)) {
       const url = URL.createObjectURL(file)
       uploadedUrls.push(url)
@@ -120,7 +120,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
       try {
         const analysis = await analyzeAccidentImage(newFiles[0])
         setAiAnalysis(analysis)
-        
+
         // Auto-fill form fields based on AI analysis
         setFormData((prev) => ({
           ...prev,
@@ -152,8 +152,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
     setIsSubmitting(true)
 
     try {
-      // Generate DigiPin
-      const digipin = generateDigiPin(formData.latitude, formData.longitude)
+
 
       // Prepare incident data
       const incidentData: IncidentInsert = {
@@ -165,7 +164,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
         latitude: formData.latitude,
         longitude: formData.longitude,
         address: formData.address,
-        digipin: digipin,
+
         source: 'citizen_app',
         ai_confidence: aiAnalysis?.confidence || null,
         ai_analysis: aiAnalysis ? JSON.stringify(aiAnalysis) : null,
@@ -184,7 +183,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
       if (photoFiles.length > 0) {
         console.log('Uploading', photoFiles.length, 'photos...')
         try {
-          const uploadPromises = photoFiles.map((file, index) => 
+          const uploadPromises = photoFiles.map((file, index) =>
             incidentMediaApi.upload(createdIncident.id, file, index === 0)
               .then(result => {
                 if (result) {
@@ -198,10 +197,10 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                 return null
               })
           )
-          
+
           await Promise.all(uploadPromises)
           console.log(`${uploadedCount}/${photoFiles.length} photos uploaded successfully`)
-          
+
           if (uploadedCount === 0 && photoFiles.length > 0) {
             console.warn('All photo uploads failed - check storage bucket setup')
           }
@@ -246,13 +245,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
         <p className="text-sm text-gray-500">
           Emergency services have been notified and will respond shortly.
         </p>
-        {formData.latitude && formData.longitude && (
-          <div className="mt-4 p-3 bg-blue-50 rounded-xl inline-block">
-            <p className="text-sm font-mono text-blue-700">
-              DigiPin: {generateDigiPin(formData.latitude, formData.longitude)}
-            </p>
-          </div>
-        )}
+
       </motion.div>
     )
   }
@@ -260,7 +253,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 sm:p-8">
       {/* Progress Steps */}
-      <div className="flex items-center justify-center gap-2 mb-8">
+      <div className="flex items-center justify-center gap-2 mb-8 overflow-x-auto py-2">
         {[1, 2, 3].map((s) => (
           <React.Fragment key={s}>
             <motion.div
@@ -268,16 +261,15 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                 scale: step === s ? 1.1 : 1,
                 backgroundColor: step >= s ? '#3b82f6' : '#e5e7eb',
               }}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+              className="w-8 h-8 min-w-[2rem] rounded-full flex items-center justify-center text-sm font-medium"
               style={{ color: step >= s ? 'white' : '#6b7280' }}
             >
               {s}
             </motion.div>
             {s < 3 && (
               <div
-                className={`w-12 h-1 rounded-full transition-colors ${
-                  step > s ? 'bg-blue-500' : 'bg-gray-200'
-                }`}
+                className={`w-8 sm:w-12 h-1 rounded-full transition-colors ${step > s ? 'bg-blue-500' : 'bg-gray-200'
+                  }`}
               />
             )}
           </React.Fragment>
@@ -303,9 +295,8 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
             {/* Photo Upload */}
             <div className="space-y-4">
               <div
-                className={`border-2 border-dashed rounded-2xl p-8 text-center transition-colors ${
-                  isUploading ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-blue-400'
-                }`}
+                className={`border-2 border-dashed rounded-2xl p-8 text-center transition-colors ${isUploading ? 'border-blue-400 bg-blue-50' : 'border-gray-200 hover:border-blue-400'
+                  }`}
               >
                 <input
                   type="file"
@@ -407,7 +398,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                       {Math.round(aiAnalysis.confidence * 100)}% confidence
                     </span>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <span className="text-gray-500">Type:</span>
@@ -417,12 +408,11 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                     </div>
                     <div>
                       <span className="text-gray-500">Severity:</span>
-                      <span className={`ml-2 font-medium capitalize ${
-                        aiAnalysis.severity === 'critical' ? 'text-red-600' :
+                      <span className={`ml-2 font-medium capitalize ${aiAnalysis.severity === 'critical' ? 'text-red-600' :
                         aiAnalysis.severity === 'high' ? 'text-orange-600' :
-                        aiAnalysis.severity === 'medium' ? 'text-yellow-600' :
-                        'text-green-600'
-                      }`}>
+                          aiAnalysis.severity === 'medium' ? 'text-yellow-600' :
+                            'text-green-600'
+                        }`}>
                         {aiAnalysis.severity}
                       </span>
                     </div>
@@ -495,11 +485,7 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                   <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-500 animate-spin" />
                 )}
               </div>
-              {formData.latitude && formData.longitude && (
-                <p className="text-xs text-gray-400 font-mono">
-                  DigiPin: {generateDigiPin(formData.latitude, formData.longitude)}
-                </p>
-              )}
+
             </div>
 
             {/* Accident Type */}
@@ -535,11 +521,10 @@ export default function ReportForm({ onSuccess, onCancel }: ReportFormProps) {
                     onClick={() =>
                       setFormData((prev) => ({ ...prev, severity: option.value }))
                     }
-                    className={`p-3 rounded-xl text-left transition-all ${
-                      formData.severity === option.value
-                        ? `${option.color} ring-2 ring-offset-2 ring-current`
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700'
-                    }`}
+                    className={`p-3 rounded-xl text-left transition-all ${formData.severity === option.value
+                      ? `${option.color} ring-2 ring-offset-2 ring-current`
+                      : 'bg-gray-50 hover:bg-gray-100 text-gray-700'
+                      }`}
                   >
                     <p className="font-medium text-sm">{option.label}</p>
                   </button>

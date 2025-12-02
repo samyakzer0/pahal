@@ -66,12 +66,12 @@ export default function SmartCamera() {
     try {
       setStatus('Requesting camera access...')
       const stream = await smartCameraService.requestCameraAccess()
-      
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream
         await videoRef.current.play()
       }
-      
+
       setCameraActive(true)
       setStatus('Camera ready - Click "Start Monitoring" to begin')
     } catch (error) {
@@ -168,15 +168,12 @@ export default function SmartCamera() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                <Camera className="w-5 h-5 text-white" />
-              </div>
+            <h1 className="text-2xl font-bold text-gray-900">
               Smart Camera
             </h1>
             <p className="text-gray-500 mt-1">AI-powered accident detection using device camera</p>
           </div>
-          
+
           <Button
             variant="outline"
             onClick={() => setShowSettings(!showSettings)}
@@ -200,7 +197,7 @@ export default function SmartCamera() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 border border-gray-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
@@ -212,7 +209,7 @@ export default function SmartCamera() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 border border-gray-100">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -224,7 +221,7 @@ export default function SmartCamera() {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white rounded-2xl p-4 border border-gray-100">
             <div className="flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isMonitoring ? 'bg-green-100' : 'bg-gray-100'}`}>
@@ -251,7 +248,7 @@ export default function SmartCamera() {
                   playsInline
                   className="w-full h-full object-cover"
                 />
-                
+
                 {!cameraActive && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                     <VideoOff className="w-16 h-16 text-gray-500 mb-4" />
@@ -283,7 +280,7 @@ export default function SmartCamera() {
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-sm text-gray-600">{status}</p>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {!cameraActive ? (
                     <Button onClick={startCamera} className="gap-2">
@@ -296,7 +293,7 @@ export default function SmartCamera() {
                         <VideoOff className="w-4 h-4" />
                         Stop Camera
                       </Button>
-                      
+
                       {!isMonitoring ? (
                         <Button onClick={startMonitoring} className="gap-2 bg-green-600 hover:bg-green-700">
                           <Play className="w-4 h-4" />
@@ -308,7 +305,7 @@ export default function SmartCamera() {
                           Stop Monitoring
                         </Button>
                       )}
-                      
+
                       <Button onClick={triggerManualCapture} variant="outline" className="gap-2">
                         <Camera className="w-4 h-4" />
                         Manual Capture
@@ -328,11 +325,10 @@ export default function SmartCamera() {
                   exit={{ opacity: 0, height: 0 }}
                   className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100"
                 >
-                  <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    <Settings className="w-5 h-5" />
-                    Smart Camera Settings
+                  <h3 className="font-semibold text-gray-900 mb-4">
+                    Settings
                   </h3>
-                  
+
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <Label className="text-sm text-gray-700">Capture Interval (seconds)</Label>
@@ -346,7 +342,7 @@ export default function SmartCamera() {
                       />
                       <p className="text-sm text-gray-500 mt-1">{config.captureIntervalSeconds} seconds</p>
                     </div>
-                    
+
                     <div>
                       <Label className="text-sm text-gray-700">Auto-Submit Threshold</Label>
                       <input
@@ -359,7 +355,7 @@ export default function SmartCamera() {
                       />
                       <p className="text-sm text-gray-500 mt-1">{Math.round(config.autoSubmitThreshold * 100)}% confidence</p>
                     </div>
-                    
+
                     <div>
                       <Label className="text-sm text-gray-700">Manual Review Threshold</Label>
                       <input
@@ -372,7 +368,7 @@ export default function SmartCamera() {
                       />
                       <p className="text-sm text-gray-500 mt-1">{Math.round(config.manualReviewThreshold * 100)}% confidence</p>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <Label className="text-sm text-gray-700">Location Tracking</Label>
                       <button
@@ -386,8 +382,8 @@ export default function SmartCamera() {
 
                   <div className="mt-4 p-4 bg-blue-50 rounded-xl">
                     <p className="text-sm text-blue-700">
-                      <strong>How it works:</strong> Captures above {Math.round(config.autoSubmitThreshold * 100)}% confidence are auto-submitted. 
-                      Between {Math.round(config.manualReviewThreshold * 100)}%-{Math.round(config.autoSubmitThreshold * 100)}% require manual review. 
+                      <strong>How it works:</strong> Captures above {Math.round(config.autoSubmitThreshold * 100)}% confidence are auto-submitted.
+                      Between {Math.round(config.manualReviewThreshold * 100)}%-{Math.round(config.autoSubmitThreshold * 100)}% require manual review.
                       Below {Math.round(config.manualReviewThreshold * 100)}% are discarded.
                     </p>
                   </div>
@@ -431,18 +427,17 @@ export default function SmartCamera() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       onClick={() => setSelectedCapture(capture)}
-                      className={`p-3 rounded-xl border cursor-pointer transition-all hover:shadow-md ${
-                        capture.status === 'pending-review' 
-                          ? 'bg-yellow-50 border-yellow-200' 
+                      className={`p-3 rounded-xl border cursor-pointer transition-all hover:shadow-md ${capture.status === 'pending-review'
+                          ? 'bg-yellow-50 border-yellow-200'
                           : capture.status === 'auto-submitted'
-                          ? 'bg-green-50 border-green-200'
-                          : 'bg-gray-50 border-gray-100'
-                      }`}
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-gray-50 border-gray-100'
+                        }`}
                     >
                       <div className="flex items-start gap-3">
-                        <img 
-                          src={capture.imageData} 
-                          alt="Capture" 
+                        <img
+                          src={capture.imageData}
+                          alt="Capture"
                           className="w-16 h-12 object-cover rounded-lg"
                         />
                         <div className="flex-1 min-w-0">
@@ -505,9 +500,9 @@ export default function SmartCamera() {
                   </button>
                 </div>
 
-                <img 
-                  src={selectedCapture.imageData} 
-                  alt="Capture" 
+                <img
+                  src={selectedCapture.imageData}
+                  alt="Capture"
                   className="w-full rounded-2xl mb-4"
                 />
 
@@ -529,15 +524,14 @@ export default function SmartCamera() {
                       <div className="flex items-center gap-2">
                         <Zap className="w-5 h-5 text-purple-600" />
                         <span className="font-medium text-gray-900">AI Analysis</span>
-                        <span className={`ml-auto px-2 py-0.5 rounded-full text-xs ${
-                          selectedCapture.analysis.confidence >= 0.8 ? 'bg-green-100 text-green-700' :
-                          selectedCapture.analysis.confidence >= 0.5 ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-gray-100 text-gray-600'
-                        }`}>
+                        <span className={`ml-auto px-2 py-0.5 rounded-full text-xs ${selectedCapture.analysis.confidence >= 0.8 ? 'bg-green-100 text-green-700' :
+                            selectedCapture.analysis.confidence >= 0.5 ? 'bg-yellow-100 text-yellow-700' :
+                              'bg-gray-100 text-gray-600'
+                          }`}>
                           {Math.round(selectedCapture.analysis.confidence * 100)}% confidence
                         </span>
                       </div>
-                      
+
                       <div>
                         <p className="font-medium text-gray-900">{selectedCapture.analysis.title}</p>
                         <p className="text-sm text-gray-600 mt-1">{selectedCapture.analysis.description}</p>
@@ -550,12 +544,11 @@ export default function SmartCamera() {
                         </div>
                         <div>
                           <span className="text-gray-500">Severity:</span>
-                          <span className={`ml-2 capitalize ${
-                            selectedCapture.analysis.severity === 'critical' ? 'text-red-600' :
-                            selectedCapture.analysis.severity === 'high' ? 'text-orange-600' :
-                            selectedCapture.analysis.severity === 'medium' ? 'text-yellow-600' :
-                            'text-green-600'
-                          }`}>
+                          <span className={`ml-2 capitalize ${selectedCapture.analysis.severity === 'critical' ? 'text-red-600' :
+                              selectedCapture.analysis.severity === 'high' ? 'text-orange-600' :
+                                selectedCapture.analysis.severity === 'medium' ? 'text-yellow-600' :
+                                  'text-green-600'
+                            }`}>
                             {selectedCapture.analysis.severity}
                           </span>
                         </div>
@@ -573,14 +566,14 @@ export default function SmartCamera() {
 
                   {selectedCapture.status === 'pending-review' && (
                     <div className="flex gap-3 pt-4 border-t border-gray-100">
-                      <Button 
+                      <Button
                         onClick={() => approveCapture(selectedCapture.id)}
                         className="flex-1 gap-2 bg-green-600 hover:bg-green-700"
                       >
                         <CheckCircle className="w-4 h-4" />
                         Approve & Submit
                       </Button>
-                      <Button 
+                      <Button
                         onClick={() => rejectCapture(selectedCapture.id)}
                         variant="outline"
                         className="flex-1 gap-2 border-red-200 text-red-600 hover:bg-red-50"

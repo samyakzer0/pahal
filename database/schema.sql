@@ -159,7 +159,7 @@ CREATE TABLE incidents (
   location GEOGRAPHY(POINT, 4326),
   address TEXT,
   landmark VARCHAR(255),
-  digipin VARCHAR(50),
+
   road_name VARCHAR(255),
   city VARCHAR(100),
   state VARCHAR(100),

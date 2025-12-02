@@ -165,12 +165,7 @@ export default function HotspotMap({
                     <Clock className="w-3 h-3" />
                     <span>{format(new Date(incident.created_at), 'MMM d, h:mm a')}</span>
                   </div>
-                  {incident.digipin && (
-                    <div className="flex items-center gap-2">
-                      <Navigation className="w-3 h-3" />
-                      <span className="font-mono">DigiPin: {incident.digipin}</span>
-                    </div>
-                  )}
+
                 </div>
               </div>
             </Popup>

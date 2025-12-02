@@ -19,7 +19,7 @@ export interface Incident {
   resolved_at?: string
   response_notes?: string
   report_count: number
-  digipin?: string
+
   is_ai_detected?: boolean
 }
 
@@ -67,7 +67,7 @@ export const mockIncidents: Incident[] = [
     created_date: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     updated_date: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     report_count: 3,
-    digipin: '2861-7720-1390',
+
   },
   {
     id: '2',
@@ -83,7 +83,7 @@ export const mockIncidents: Incident[] = [
     created_date: new Date(Date.now() - 1000 * 60 * 45).toISOString(),
     updated_date: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
     report_count: 1,
-    digipin: '2862-7721-8092',
+
   },
   {
     id: '3',
@@ -101,7 +101,7 @@ export const mockIncidents: Incident[] = [
     created_date: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
     updated_date: new Date(Date.now() - 1000 * 60 * 10).toISOString(),
     report_count: 2,
-    digipin: '2854-7725-1394',
+
   },
   {
     id: '4',
@@ -117,7 +117,7 @@ export const mockIncidents: Incident[] = [
     created_date: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
     updated_date: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
     report_count: 4,
-    digipin: '2856-7721-0072',
+
   },
   {
     id: '5',
@@ -133,7 +133,7 @@ export const mockIncidents: Incident[] = [
     created_date: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     updated_date: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     report_count: 1,
-    digipin: '2863-7722-4550',
+
   },
   {
     id: '6',
@@ -150,7 +150,7 @@ export const mockIncidents: Incident[] = [
     updated_date: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
     resolved_at: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
     report_count: 1,
-    digipin: '2859-7722-9021',
+
   },
 ]
 
